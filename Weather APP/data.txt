@@ -1,0 +1,104 @@
+ // --- DOM ELEMENTS ---
+            const searchForm = document.getElementById('search-form');
+            const cityInput = document.getElementById('city-input');
+            const geolocationBtn = document.getElementById('geolocation-btn');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const weatherContent = document.getElementById('weather-content');
+            const errorModal = document.getElementById('error-modal');
+            const errorMessageEl = document.getElementById('error-message');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const animationContainer = document.getElementById('animation-container');
+
+            const geminiBtn = document.getElementById('gemini-btn');
+            const geminiModal = document.getElementById('gemini-modal');
+            const closeGeminiModalBtn = document.getElementById('close-gemini-modal-btn');
+            const geminiResponseEl = document.getElementById('gemini-response');
+
+            const cityNameEl = document.getElementById('city-name');
+            const currentDateEl = document.getElementById('current-date');
+            const currentTempEl = document.getElementById('current-temp');
+            const currentWeatherDescEl = document.getElementById('current-weather-desc');
+            const humanWeatherIconEl = document.getElementById('human-weather-icon');
+            
+            const forecastContainer = document.getElementById('forecast-container');
+            const sunriseTimeEl = document.getElementById('sunrise-time');
+            const sunsetTimeEl = document.getElementById('sunset-time');
+            const humidityEl = document.getElementById('humidity');
+            const windSpeedEl = document.getElementById('wind-speed');
+            const feelsLikeEl = document.getElementById('feels-like');
+            const pressureEl = document.getElementById('pressure');
+            const visibilityEl = document.getElementById('visibility');
+            const airQualityEl = document.getElementById('air-quality');
+
+
+ // --- BACKGROUND & HUMAN ICON MAPPING ---
+            const backgroundImagesDay = {
+                Clear: 'https://images.unsplash.com/photo-1590077428593-a55d2275685a?auto=format&fit=crop&w=2000',
+                Clouds: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=2000',
+                Rain: 'https://images.unsplash.com/photo-1519692933481-e14e246f7d9d?auto=format&fit=crop&w=2000',
+                Drizzle: 'https://images.unsplash.com/photo-1556485689-33e55ab56127?auto=format&fit=crop&w=2000',
+                Thunderstorm: 'https://images.unsplash.com/photo-1605727226433-928571c0a24a?auto=format&fit=crop&w=2000',
+                Snow: 'https://images.unsplash.com/photo-1542274368-443d694d79c1?auto=format&fit=crop&w=2000',
+                Mist: 'https://images.unsplash.com/photo-1485236791352-4558b54145d3?auto=format&fit=crop&w=2000',
+                Default: 'https://images.unsplash.com/photo-1486823623949-183941350174?auto=format&fit=crop&w=2000'
+            };
+
+            const backgroundImagesNight = {
+                Clear: 'https://images.unsplash.com/photo-1507400492414-b2214356c581?auto=format&fit=crop&w=2000',
+                Clouds: 'https://images.unsplash.com/photo-1476611338395-5f393ce24042?auto=format&fit=crop&w=2000',
+                Rain: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=2000',
+                Drizzle: 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=2000',
+                Thunderstorm: 'https://images.unsplash.com/photo-1516970924443-52317a35c24a?auto=format&fit=crop&w=2000',
+                Snow: 'https://images.unsplash.com/photo-1491002052546-bf38f186af56?auto=format&fit=crop&w=2000',
+                Mist: 'https://images.unsplash.com/photo-1485802649633-89626a5b1e49?auto=format&fit=crop&w=2000',
+                Default: 'https://images.unsplash.com/photo-1532074534361-bb42488c3a23?auto=format&fit=crop&w=2000'
+            };
+            
+            const humanIcons = {
+                Rain: `<svg viewBox="0 0 64 64"><path d="M46.5 20a14.48 14.48 0 00-29 0A12.49 12.49 0 0019 42h26a12.49 12.49 0 001.5-22z" fill="#4299e1"></path><path d="M24.28 50.27a2 2 0 01-1.8-1.15 2 2 0 01.7-2.22l14-11.2a2 2 0 012.5 3.08l-14 11.2a2 2 0 01-1.4.29z" fill="#e2e8f0"></path><path d="M32 35a2 2 0 01-2-2V11a2 2 0 014 0v22a2 2 0 01-2 2z" fill="#e2e8f0"></path><path d="M32 59a2 2 0 01-2-2v-3a2 2 0 014 0v3a2 2 0 01-2 2z" fill="#e2e8f0"></path><circle cx="32" cy="51" r="3" fill="#e2e8f0"></circle></svg>`,
+                Snow: `<svg viewBox="0 0 64 64"><path d="M54 39.38V22.62a4 4 0 00-2.34-3.69l-16-9.24a4 4 0 00-4 0l-16 9.24A4 4 0 008 22.62v16.76a4 4 0 002.34 3.69l16 9.24a4 4 0 004 0l16-9.24A4 4 0 0054 39.38z" fill="#4a5568"></path><path d="M42 21h-4a2 2 0 00-2 2v22a2 2 0 002 2h4a2 2 0 002-2V23a2 2 0 00-2-2zm-16 0h-4a2 2 0 00-2 2v22a2 2 0 002 2h4a2 2 0 002-2V23a2 2 0 00-2-2z" fill="#718096"></path><path d="M32 54a8 8 0 10-8-8 8 8 0 008 8z" fill="#e2e8f0"></path><path d="M32 16a4 4 0 10-4-4 4 4 0 004 4z" fill="#e2e8f0"></path></svg>`,
+                Clear: `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="16" fill="#f6e05e"></circle><path d="M32 4v4M32 56v4M10.18 10.18l2.83 2.83M51 51l2.83 2.83M4 32h4M56 32h4M10.18 53.82l2.83-2.83M51 13l2.83-2.82" fill="none" stroke="#f6e05e" stroke-linecap="round" stroke-miterlimit="10" stroke-width="4"></path><path d="M42 52a10 10 0 00-20 0z" fill="#4a5568"></path><circle cx="32" cy="45" r="4" fill="#e2e8f0"></circle></svg>`,
+                Clouds: `<svg viewBox="0 0 64 64"><path d="M46.5 20a14.48 14.48 0 00-29 0A12.49 12.49 0 0019 42h26a12.49 12.49 0 001.5-22z" fill="#a0aec0"></path><path d="M42 54a10 10 0 00-20 0z" fill="#4a5568"></path><circle cx="32" cy="47" r="4" fill="#e2e8f0"></circle></svg>`,
+                Default: `<svg viewBox="0 0 64 64"><circle cx="32" cy="18" r="6" fill="#e2e8f0"></circle><path d="M40 54a8 8 0 00-16 0z" fill="#718096"></path><path d="M40 28H24a4 4 0 00-4 4v10h24V32a4 4 0 00-4-4z" fill="#a0aec0"></path></svg>`
+            };
+            
+
+const updateNightAnimations = (isNight, condition) => {
+                animationContainer.innerHTML = '';
+                if (!isNight) return;
+
+                if (condition === 'Clear') {
+                    for (let i = 0; i < 20; i++) {
+                        const star = document.createElement('div');
+                        star.className = 'star';
+                        star.style.top = `${Math.random() * 100}%`;
+                        star.style.left = `${Math.random() * 100}%`;
+                        star.style.width = `${Math.random() * 2 + 1}px`;
+                        star.style.height = star.style.width;
+                        star.style.animationDelay = `${Math.random() * 5}s`;
+                        star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                        animationContainer.appendChild(star);
+                    }
+                } else if (condition === 'Rain' || condition === 'Drizzle') {
+                    for (let i = 0; i < 50; i++) {
+                        const drop = document.createElement('div');
+                        drop.className = 'rain-drop';
+                        drop.style.left = `${Math.random() * 100}%`;
+                        drop.style.animationDelay = `${Math.random() * 2}s`;
+                        drop.style.animationDuration = `${Math.random() * 0.5 + 0.5}s`;
+                        animationContainer.appendChild(drop);
+                    }
+                } else if (condition === 'Snow') {
+                     for (let i = 0; i < 50; i++) {
+                        const flake = document.createElement('div');
+                        flake.className = 'snowflake';
+                        flake.style.left = `${Math.random() * 100}%`;
+                        flake.style.animationDelay = `${Math.random() * 10}s`;
+                        flake.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                        flake.style.opacity = `${Math.random() * 0.5 + 0.3}`;
+                        animationContainer.appendChild(flake);
+                    }
+                }
+            };
+
+    
