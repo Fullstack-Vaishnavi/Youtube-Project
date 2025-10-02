@@ -1,0 +1,4 @@
+ //sw.js
+
+ icon: 'https://placehold.co/192x192/3B82F6/FFFFFF?text=RA', // Large icon shown in the notification tray
+ badge: 'https://placehold.co/96x96/3B82F6/FFFFFF?text=🔔', // Small monochrome badge icon (Android)
